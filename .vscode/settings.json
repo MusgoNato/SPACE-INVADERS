@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "console_v1.5.5.h": "c",
+        "conio_v3.2.4.h": "c",
+        "funcoes.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c"
+    }
+}

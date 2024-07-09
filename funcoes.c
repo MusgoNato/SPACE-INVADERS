@@ -16,6 +16,7 @@ void Inicia_naves(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *janela)
     nave->posicao_disparo.X = nave->posicao_nave.X;
     nave->posicao_disparo.Y = nave->posicao_nave.Y;
 
+
     /*Inicializa nave inimiga*/
     nave_inimiga->vida = VIDA_INIMIGO;
     nave_inimiga->posicao_nave_inimiga.X = janela->maximiza_janela.X/2;
@@ -23,28 +24,23 @@ void Inicia_naves(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *janela)
     nave_inimiga->posicao_disparo_inimigo.X = nave_inimiga->posicao_nave_inimiga.X;
     nave_inimiga->posicao_disparo_inimigo.Y = nave_inimiga->posicao_nave_inimiga.Y;
     nave_inimiga->colisor_inferior = 4;
+
 }
 
 /*Comeca o jogo*/
 void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
 {
-    /*Chamada da funcao para desenho da minha nave*/
-    Desenha_nave(nave);
-
-    /*Desenha nave inimiga*/
-    Desenha_inimigo(nave_inimiga);
-
     do
     {
         /*Navegacao da nave*/
         Navega_nave(nave);
 
         /*Chama a funcao para diparar meu projetil da nave*/
-        Dispara_projetil(nave);
+        Dispara_projetil(nave, nave_inimiga);
 
         /*Apaga projeti disparado*/
-        Apaga_projetil(nave);
-
+        Apaga_projetil(nave, nave_inimiga);
+        
     }while(1);
     
 }
@@ -58,7 +54,7 @@ void Desenha_inimigo(NAVE_INIMIGA *nave_inimiga)
     chama novamente a funcao Desenha_Inimigo(), assim ele redesenha porem com uma linha a menos, como se fosse cortando o inimigo*/
     for(i = 0; i < nave_inimiga->colisor_inferior; i++)
     {
-        for(j = 0; j < 4; j++)
+        for(j = 0; j < nave_inimiga->colisor_inferior; j++)
         {
             textcolor(RED);
             gotoxy(nave_inimiga->posicao_nave_inimiga.X + j, nave_inimiga->posicao_nave_inimiga.Y + i);
@@ -98,14 +94,14 @@ void Apaga_nave(NAVE *nave)
 }
 
 /*Responsavel pelo disparo da minha nave*/
-void Dispara_projetil(NAVE *nave)
+void Dispara_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
 {
-    if(nave->posicao_disparo.Y > 1)
+    if(nave->posicao_disparo.Y > 1 && nave->posicao_disparo.Y > nave_inimiga->colisor_inferior)
     {
+        textbackground(BLUE);
         textcolor(WHITE);
         gotoxy(nave->posicao_disparo.X, --nave->posicao_disparo.Y);
-        printf("*");
-        Sleep(5);
+        putchar(167);
     }
     else
     {
@@ -113,18 +109,20 @@ void Dispara_projetil(NAVE *nave)
         nave->posicao_disparo.X = nave->posicao_nave.X;
         nave->posicao_disparo.Y = nave->posicao_nave.Y;
     }
+
+    Sleep(10);
     
 }
 
 /*Apaga projetil*/
-void Apaga_projetil(NAVE *nave)
+void Apaga_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
 {
-    if(nave->posicao_disparo.Y > 1)
+    if(nave->posicao_disparo.Y > 1 && nave->posicao_disparo.Y > nave_inimiga->colisor_inferior)
     {
+        textbackground(BLACK);
         textcolor(BLACK);
         gotoxy(nave->posicao_disparo.X, nave->posicao_disparo.Y);
-        printf(" ");
-        Sleep(5);
+        putchar(167);
     }
     else
     {
@@ -132,6 +130,7 @@ void Apaga_projetil(NAVE *nave)
         nave->posicao_disparo.X = nave->posicao_nave.X;
         nave->posicao_disparo.Y = nave->posicao_nave.Y;
     }
+    Sleep(10);
     
 }
 

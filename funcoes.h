@@ -1,4 +1,4 @@
-/*Declara√ß√µes e prototipos*/
+/*Declaraá‰es e prototipos*/
 
 # include "console_v1.5.5.h"
 
@@ -37,10 +37,10 @@ void Desenha_nave(NAVE *);
 void Desenha_inimigo(NAVE_INIMIGA *);
 
 /*Apaga projetil lancado*/
-void Apaga_projetil(NAVE *);
+void Apaga_projetil(NAVE *, NAVE_INIMIGA *);
 
 /*Dispara projetil da nave*/
-void Dispara_projetil(NAVE *);
+void Dispara_projetil(NAVE *, NAVE_INIMIGA *);
 
 /*Comeco do meu jogo*/
 void game(NAVE *, NAVE_INIMIGA *);

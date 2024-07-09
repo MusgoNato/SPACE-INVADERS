@@ -22,6 +22,12 @@ int main(int argc, char *argv[])
     /*Inicializacao dos valores da nave*/
     Inicia_naves(&nave, &nave_inimiga, &janela);
 
+    /*Chamada da funcao para desenho da minha nave*/
+    Desenha_nave(&nave);
+
+    /*Desenha nave inimiga*/
+    Desenha_inimigo(&nave_inimiga);
+
     /*Faz a chamada do jogo*/
     game(&nave, &nave_inimiga);
 

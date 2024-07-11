@@ -1,0 +1,40 @@
+/*Responsavel pelo disparo da minha nave*/
+void Dispara_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
+{
+    if(nave->posicao_disparo.Y > 1 && nave->posicao_disparo.Y > nave_inimiga->colisor_inferior)
+    {
+        textbackground(BLUE);
+        textcolor(WHITE);
+        gotoxy(nave->posicao_disparo.X, --nave->posicao_disparo.Y);
+        putchar(167);
+    }
+    else
+    {
+        /*Reinicializa o disparo ao tocar no limite*/
+        nave->posicao_disparo.X = nave->posicao_nave.X;
+        nave->posicao_disparo.Y = nave->posicao_nave.Y;
+    }
+
+    Sleep(10);
+    
+}
+
+/*Apaga projetil*/
+void Apaga_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
+{
+    if(nave->posicao_disparo.Y > 1 && nave->posicao_disparo.Y > nave_inimiga->colisor_inferior)
+    {
+        textbackground(BLACK);
+        textcolor(BLACK);
+        gotoxy(nave->posicao_disparo.X, nave->posicao_disparo.Y);
+        putchar(167);
+    }
+    else
+    {
+        /*Reinicializa o disparo ao tocar no limite*/
+        nave->posicao_disparo.X = nave->posicao_nave.X;
+        nave->posicao_disparo.Y = nave->posicao_nave.Y;
+    }
+    Sleep(10);
+    
+}

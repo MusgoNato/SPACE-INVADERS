@@ -19,49 +19,135 @@ void Inicia_naves(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *janela)
 
     /*Inicializa nave inimiga*/
     nave_inimiga->vida = VIDA_INIMIGO;
-    nave_inimiga->posicao_nave_inimiga.X = janela->maximiza_janela.X/2;
+    nave_inimiga->posicao_nave_inimiga.X = janela->maximiza_janela.X - 1;
     nave_inimiga->posicao_nave_inimiga.Y = 1;
     nave_inimiga->posicao_disparo_inimigo.X = nave_inimiga->posicao_nave_inimiga.X;
     nave_inimiga->posicao_disparo_inimigo.Y = nave_inimiga->posicao_nave_inimiga.Y;
-    nave_inimiga->colisor_inferior = 4;
+    nave_inimiga->colisor_inferior = TAM_ENEMY_01;
 
 }
 
 /*Comeca o jogo*/
-void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
+void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 {
+    int cont = 0;
+    int x = 0;
+
+    /*Gero meu inimigo em uma posicao aleatoria da tela*/
+    x = Gera_inimigo(nave_inimiga, Janela);
+    
     do
     {
         /*Navegacao da nave*/
         Navega_nave(nave);
 
-        /*Chama a funcao para diparar meu projetil da nave*/
-        Dispara_projetil(nave, nave_inimiga);
+        /*Apago a geracao anterior de acordo com o time pre-definido (GERADOR_INIMIGO)*/
+        if(cont == GERADOR_INIMIGO)
+        {
+            Apaga_inimigo(nave_inimiga, x);
+            x = Gera_inimigo(nave_inimiga, Janela);
+            cont = 0;
+        }
 
-        /*Apaga projeti disparado*/
-        Apaga_projetil(nave, nave_inimiga);
+        /*Dispara o projetil inimigo e o apaga*/
+        Disparo_inimigo(nave_inimiga, nave);
+
+        Apaga_projetil_inimigo(nave, nave_inimiga);
+        
+        cont++;
         
     }while(1);
     
 }
 
-/*Responsavel por desenhar minha nave inimiga*/
-void Desenha_inimigo(NAVE_INIMIGA *nave_inimiga)
-{   
+/*Responsavel pelo disparo do inimigo*/
+void Disparo_inimigo(NAVE_INIMIGA *nave_inimiga, NAVE *nave)
+{
+    if(nave_inimiga->posicao_disparo_inimigo.Y < nave->posicao_nave.Y)
+    {
+        textcolor(RED);
+        textbackground(BLACK);
+        gotoxy(nave_inimiga->posicao_nave_inimiga.X, ++nave_inimiga->posicao_disparo_inimigo.Y);
+        printf("A"); 
+    }
+    else
+    {
+        nave_inimiga->posicao_disparo_inimigo.Y = nave_inimiga->posicao_nave_inimiga.Y;
+    }
+
+    Sleep(2);
+    
+}
+
+/*Apaga projetil inimigo*/
+void Apaga_projetil_inimigo(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
+{
+    if(nave_inimiga->posicao_disparo_inimigo.Y < nave->posicao_nave.Y)
+    {
+        textcolor(RED);
+        textbackground(BLACK);
+        gotoxy(nave_inimiga->posicao_nave_inimiga.X, nave_inimiga->posicao_disparo_inimigo.Y);
+        printf(" "); 
+    }
+    else
+    {
+        /*Reposiciona a coordenada do meu disparo*/
+        nave_inimiga->posicao_disparo_inimigo.Y = nave_inimiga->posicao_nave_inimiga.Y;
+    }
+    
+}
+
+
+/*Ao gerar aleatoriamente o inimigo pela primeira vez apago a geracao anterior*/
+void Apaga_inimigo(NAVE_INIMIGA *nave_inimiga, int x)
+{
+    int i, j;
+    for(i = 0; i < nave_inimiga->colisor_inferior; i++)
+    {
+        for(j = 0; j < nave_inimiga->colisor_inferior; j++)
+        {
+            textcolor(BLACK);
+            textbackground(BLACK);
+            gotoxy(x + j, nave_inimiga->posicao_nave_inimiga.Y + i);
+            putchar(32);
+        }
+        
+    }
+}
+
+
+/*Gera uma coordenada aleatoria na tela, aonde o inimigo surgirá*/
+int Gera_inimigo(NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
+{
     int i, j;
 
-    /*Colisor inferior eh quando for colidir o disparo com a parte inferior do inimigo, quando acontecer isso decrementa essa variavel e 
-    chama novamente a funcao Desenha_Inimigo(), assim ele redesenha porem com uma linha a menos, como se fosse cortando o inimigo*/
+    /*Gera coordenada dentro do limite da Janela*/
+    while(1)
+    {
+        nave_inimiga->posicao_nave_inimiga.X = (1 + rand() % Janela->maximiza_janela.X);
+
+        if(nave_inimiga->posicao_nave_inimiga.X >= 1 && nave_inimiga->posicao_nave_inimiga.X < Janela->maximiza_janela.X)
+        {
+            break;
+        }
+    }
+    
+   
+    /*Desenha inimigo*/
     for(i = 0; i < nave_inimiga->colisor_inferior; i++)
     {
         for(j = 0; j < nave_inimiga->colisor_inferior; j++)
         {
             textcolor(RED);
             gotoxy(nave_inimiga->posicao_nave_inimiga.X + j, nave_inimiga->posicao_nave_inimiga.Y + i);
-            printf("*");
+            putchar(4);
         }
         
     }
+
+    /*Retorno da coordenada gerada*/
+    return nave_inimiga->posicao_nave_inimiga.X;
+    
 }
 
 /*Desenha minha nave na tela*/
@@ -93,45 +179,30 @@ void Apaga_nave(NAVE *nave)
     }
 }
 
-/*Responsavel pelo disparo da minha nave*/
-void Dispara_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
+/*Responsavel pelo disparo da minha nave, desenha e apaga projetil*/
+void Dispara_projetil(NAVE *nave)
 {
-    if(nave->posicao_disparo.Y > 1 && nave->posicao_disparo.Y > nave_inimiga->colisor_inferior)
+    while(nave->posicao_disparo.Y > 1)
     {
-        textbackground(BLUE);
-        textcolor(WHITE);
         gotoxy(nave->posicao_disparo.X, --nave->posicao_disparo.Y);
-        putchar(167);
-    }
-    else
-    {
-        /*Reinicializa o disparo ao tocar no limite*/
-        nave->posicao_disparo.X = nave->posicao_nave.X;
-        nave->posicao_disparo.Y = nave->posicao_nave.Y;
-    }
+        textbackground(WHITE);
+        textcolor(BLUE);
+        putchar(179);
 
-    Sleep(10);
-    
-}
-
-/*Apaga projetil*/
-void Apaga_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
-{
-    if(nave->posicao_disparo.Y > 1 && nave->posicao_disparo.Y > nave_inimiga->colisor_inferior)
-    {
-        textbackground(BLACK);
-        textcolor(BLACK);
-        gotoxy(nave->posicao_disparo.X, nave->posicao_disparo.Y);
-        putchar(167);
+        /*Ao tocar no topo, volta apagando a bala ate sua origem*/
+        if(nave->posicao_disparo.Y == 1)
+        {
+            while(nave->posicao_disparo.Y < nave->posicao_nave.Y - 1)
+            {
+                gotoxy(nave->posicao_disparo.X, ++nave->posicao_disparo.Y);
+                textbackground(BLACK);
+                textcolor(BLACK);
+                putchar(179);
+            }
+            break;
+        }
+            
     }
-    else
-    {
-        /*Reinicializa o disparo ao tocar no limite*/
-        nave->posicao_disparo.X = nave->posicao_nave.X;
-        nave->posicao_disparo.Y = nave->posicao_nave.Y;
-    }
-    Sleep(10);
-    
 }
 
 /*Controla a navegacao da minha nave*/
@@ -143,10 +214,10 @@ void Navega_nave(NAVE *nave)
         nave->ship_navegacao = Evento();
         if(nave->ship_navegacao.tipo_evento & KEY_EVENT)
         {
-            if(nave->ship_navegacao.teclado.status_tecla == LIBERADA)
+            if(nave->ship_navegacao.teclado.status_tecla == PRESSIONADA)
             {
                 switch(nave->ship_navegacao.teclado.key_code)
-                {
+                {   
                     case ESC:
                     {
                         textbackground(BLACK);
@@ -189,6 +260,16 @@ void Navega_nave(NAVE *nave)
                         nave->posicao_nave.X--;
                         Desenha_nave(nave);
 
+                        break;
+                    }
+
+                    case ESPACO:
+                    {
+                        /*Ao pressionar espaço reinicializo a posicao do disparo na coordenada da nave, seu ponto de origem*/
+                        nave->posicao_disparo.X = nave->posicao_nave.X;
+
+                        /*Chama a funcao para diparar meu projetil da nave*/
+                        Dispara_projetil(nave); 
                         break;
                     }
                 }

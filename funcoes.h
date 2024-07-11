@@ -8,6 +8,7 @@
 # define VIDA_INIMIGO 20
 # define TAM_ENEMY_01 3
 # define GERADOR_INIMIGO 100
+# define VELOCIDADE_PROJETIL_INIMIGO 10
 
 
 /*Registros*/
@@ -17,6 +18,7 @@ typedef struct _nave
     COORD posicao_nave;
     COORD posicao_disparo;
     EVENTO ship_navegacao;
+    int saida;
 
 }NAVE;
 

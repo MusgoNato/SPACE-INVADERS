@@ -32,6 +32,7 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 {
     int cont = 0;
     int x = 0;
+    nave->saida = 1;
 
     /*Gero meu inimigo em uma posicao aleatoria da tela*/
     x = Gera_inimigo(nave_inimiga, Janela);
@@ -56,7 +57,7 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
         
         cont++;
         
-    }while(1);
+    }while(nave->saida);
     
 }
 
@@ -220,10 +221,7 @@ void Navega_nave(NAVE *nave)
                 {   
                     case ESC:
                     {
-                        textbackground(BLACK);
-                        textcolor(LIGHTGRAY);
-                        setCursorStatus(LIGAR);
-                        exit(0);
+                        nave->saida = 0;
                         break;
                     }
 

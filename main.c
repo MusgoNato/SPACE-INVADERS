@@ -28,6 +28,8 @@ int main(int argc, char *argv[])
     /*Faz a chamada do jogo*/
     game(&nave, &nave_inimiga, &janela);
 
+    /*Volta ao normal*/
+    free(nave.posicao_projetil);
     setCursorStatus(LIGAR);
     textbackground(BLACK);
     textcolor(LIGHTGRAY);

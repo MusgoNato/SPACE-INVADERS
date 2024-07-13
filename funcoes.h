@@ -9,6 +9,7 @@
 # define TAM_ENEMY_01 3
 # define GERADOR_INIMIGO 100
 # define VELOCIDADE_PROJETIL_INIMIGO 10
+# define VELOCIDADE_GAME 5
 
 
 /*Registros*/
@@ -19,6 +20,7 @@ typedef struct _nave
     COORD posicao_disparo;
     EVENTO ship_navegacao;
     int saida;
+    COORD **posicao_projetil;
 
 }NAVE;
 
@@ -38,8 +40,6 @@ typedef struct _inimigo
 /*Apaga nave inimiga gerada*/
 void Apaga_inimigo(NAVE_INIMIGA *, int);
 
-void Apaga_projetil_inimigo(NAVE *, NAVE_INIMIGA *);
-
 /*Apaga nave desenhada*/
 void Apaga_nave(NAVE *);
 
@@ -47,8 +47,9 @@ void Apaga_nave(NAVE *);
 void Desenha_nave(NAVE *);
 
 /*Dispara projetil da nave*/
-void Dispara_projetil(NAVE *);
+void Dispara_projetil(NAVE *, NAVE_INIMIGA *);
 
+/*Dispara projetil inimigo*/
 void Disparo_inimigo(NAVE_INIMIGA *, NAVE *);
 
 /*Comeco do meu jogo*/

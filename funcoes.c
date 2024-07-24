@@ -118,6 +118,10 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 
     /*Gero meu inimigo em uma posicao aleatoria da tela*/
     x = Gera_inimigo(nave_inimiga, Janela);
+
+    /*A coordenada recebida pela geracao aleatoria do inimigo, tera de ser recebida pelo disparo,
+    pois a 1a vez necessita que inicialize o disparo no mesmo lugar que a geracao aleatoria do proprio*/
+    nave_inimiga->posicao_disparo_inimigo.X = x;
   
     do
     {
@@ -154,7 +158,6 @@ int Gera_inimigo(NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 
     if(nave_inimiga->posicao_nave_inimiga.X >= 1 && nave_inimiga->posicao_nave_inimiga.X < Janela->maximiza_janela.X)
     {
-
         /*Desenha inimigo*/
         for(i = 0; i < nave_inimiga->colisor_inferior; i++)
         {

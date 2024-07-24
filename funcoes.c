@@ -59,24 +59,27 @@ void Desenha_nave(NAVE *nave)
 void Disparo_inimigo(NAVE_INIMIGA *nave_inimiga, NAVE *nave)
 {
     int apaga = 0;
-    if(nave_inimiga->posicao_disparo_inimigo.Y < nave->posicao_nave.Y)
+    
+    if(nave_inimiga->posicao_disparo_inimigo.Y >= nave->posicao_nave.Y)
     {
-        textbackground(BLACK);
-        textcolor(RED);
-        gotoxy(nave_inimiga->posicao_nave_inimiga.X, ++nave_inimiga->posicao_disparo_inimigo.Y);
-        printf("1"); 
-
-        apaga = nave_inimiga->posicao_disparo_inimigo.Y;
-        gotoxy(nave_inimiga->posicao_nave_inimiga.X, --apaga);
-        textcolor(BLACK);
-        printf(" ");
+        nave_inimiga->posicao_disparo_inimigo.Y = nave_inimiga->posicao_nave_inimiga.Y;
+        nave_inimiga->posicao_disparo_inimigo.X = nave_inimiga->posicao_nave_inimiga.X;
     }
     else
     {
-        nave_inimiga->posicao_disparo_inimigo.Y = nave_inimiga->posicao_nave_inimiga.Y;
+        gotoxy(nave_inimiga->posicao_disparo_inimigo.X, ++nave_inimiga->posicao_disparo_inimigo.Y);
+        textcolor(RED);
+        printf("1"); 
+
+        apaga = nave_inimiga->posicao_disparo_inimigo.Y - 1;
+        gotoxy(nave_inimiga->posicao_disparo_inimigo.X, apaga);
+        textcolor(BLACK);
+        printf(" ");
+
     }
-    
-    
+
+    Sleep(VELOCIDADE_GAME);
+
 }
 
 /*Responsavel pelo disparo da minha nave*/
@@ -87,7 +90,6 @@ void Dispara_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
     {
         
         gotoxy(nave->posicao_disparo.X, --nave->posicao_disparo.Y);
-        textbackground(BLACK);
         textcolor(YELLOW);
         printf("0");
 
@@ -113,11 +115,10 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 {
     int cont = 0;
     int x = 0;
-    nave->saida = 1;
 
     /*Gero meu inimigo em uma posicao aleatoria da tela*/
     x = Gera_inimigo(nave_inimiga, Janela);
-    x = x;
+  
     do
     {
         /*Navegacao da nave*/
@@ -146,24 +147,21 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 /*Gera uma coordenada aleatoria na tela, aonde o inimigo surgir�*/
 int Gera_inimigo(NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 {
-    int i, j;
+    int i;
 
     /*Gera coordenada dentro do limite da Janela*/
     nave_inimiga->posicao_nave_inimiga.X = (1 + rand() % Janela->maximiza_janela.X);
 
     if(nave_inimiga->posicao_nave_inimiga.X >= 1 && nave_inimiga->posicao_nave_inimiga.X < Janela->maximiza_janela.X)
     {
+
         /*Desenha inimigo*/
         for(i = 0; i < nave_inimiga->colisor_inferior; i++)
         {
-            for(j = 0; j < nave_inimiga->colisor_inferior; j++)
-            {
-                gotoxy(nave_inimiga->posicao_nave_inimiga.X + j, nave_inimiga->posicao_nave_inimiga.Y + i);
-                textcolor(RED);
-                textbackground(BLACK);
-                printf("X");
-            }
-            
+            gotoxy(nave_inimiga->posicao_nave_inimiga.X, nave_inimiga->posicao_nave_inimiga.Y + i);
+            textcolor(RED);
+            textbackground(BLACK);
+            printf("XXX");
         }
     }
     else
@@ -181,6 +179,8 @@ int Gera_inimigo(NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 void Inicia_naves(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *janela)
 {
     int i;
+    nave->saida = 1;
+
     /*Inicializa nave jogador*/
     nave->vida = VIDA;
     nave->posicao_nave.X = janela->maximiza_janela.X/2;
@@ -233,7 +233,7 @@ void Navega_nave(NAVE *nave)
         nave->ship_navegacao = Evento();
         if(nave->ship_navegacao.tipo_evento & KEY_EVENT)
         {
-            if(nave->ship_navegacao.teclado.status_tecla == LIBERADA)
+            if(nave->ship_navegacao.teclado.status_tecla == PRESSIONADA)
             {
                 switch(nave->ship_navegacao.teclado.key_code)
                 {   

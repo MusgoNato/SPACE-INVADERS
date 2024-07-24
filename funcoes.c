@@ -60,6 +60,7 @@ void Disparo_inimigo(NAVE_INIMIGA *nave_inimiga, NAVE *nave)
 {
     int apaga = 0;
     
+    /*O disparo somente é feito novamente caso atinja a posicao da nave*/
     if(nave_inimiga->posicao_disparo_inimigo.Y >= nave->posicao_nave.Y)
     {
         nave_inimiga->posicao_disparo_inimigo.Y = nave_inimiga->posicao_nave_inimiga.Y;

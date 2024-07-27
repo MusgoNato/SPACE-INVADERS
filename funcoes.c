@@ -79,8 +79,6 @@ void Disparo_inimigo(NAVE_INIMIGA *nave_inimiga, NAVE *nave)
 
     }
 
-    Sleep(VELOCIDADE_GAME);
-
 }
 
 /*Responsavel pelo disparo da minha nave*/
@@ -106,8 +104,6 @@ void Dispara_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
         nave->posicao_disparo.X = nave->posicao_nave.X;
         nave->posicao_disparo.Y = nave->posicao_nave.Y;
     }
-
-    Sleep(VELOCIDADE_GAME);
     
 }
 
@@ -115,6 +111,7 @@ void Dispara_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
 void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 {
     int cont = 0;
+    int cont_disparos = 0;
     int x = 0;
 
     /*Gero meu inimigo em uma posicao aleatoria da tela*/
@@ -139,11 +136,20 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 
         /*Dispara projetil do jogador e o apaga*/
         Dispara_projetil(nave, nave_inimiga);
-
-        /*Dispara o projetil inimigo e o apaga*/
-        Disparo_inimigo(nave_inimiga, nave);
         
+        if(cont_disparos >= DISPARA_PROJETEIS_INIMIGOS)
+        {
+            /*Dispara o projetil inimigo e o apaga*/
+            Disparo_inimigo(nave_inimiga, nave);
+            cont_disparos = 0;
+        }
+        
+        /*Ajusta a velocidade do jogo*/
+        Sleep(VELOCIDADE_GAME);
+        
+        /*Incrementa contadores para os disparos e gerador de inimigo*/
         cont++;
+        cont_disparos++;
         
     }while(nave->saida);
     

@@ -9,8 +9,11 @@
 # define TAM_ENEMY_01 3
 # define GERADOR_INIMIGO 150
 # define VELOCIDADE_PROJETIL_INIMIGO 10
-# define VELOCIDADE_GAME 25
-# define DISPARA_PROJETEIS_INIMIGOS 5
+# define VELOCIDADE_GAME 1
+# define DISPARA_PROJETEIS_INIMIGOS 6
+# define DISPARA_PROJETEIS_PLAYER 3
+# define GERACAO_BONUS_SPEED 10
+# define LIMITE_MOVIMENTO_Y 25
 
 
 /*Registros*/
@@ -22,6 +25,7 @@ typedef struct _nave
     EVENTO ship_navegacao;
     int saida;
     COORD **posicao_projetil;
+    int controla_desenho;
 
 }NAVE;
 
@@ -37,6 +41,14 @@ typedef struct _inimigo
     COORD posicao_disparo_inimigo;
     int colisor_inferior;
 }NAVE_INIMIGA;
+
+/*Referente ao meu bonus, que ao usuario pega-lo lhe dara mais velocidade no disparo*/
+typedef struct _bonus_speed
+{
+    COORD posicao_bonus_speed;
+    COORD mapa;
+    int velocidade;
+}BONUS;
 
 /*Apaga nave inimiga gerada*/
 void Apaga_inimigo(NAVE_INIMIGA *, int);
@@ -54,7 +66,9 @@ void Dispara_projetil(NAVE *, NAVE_INIMIGA *);
 void Disparo_inimigo(NAVE_INIMIGA *, NAVE *);
 
 /*Comeco do meu jogo*/
-void game(NAVE *, NAVE_INIMIGA *, MAX_JANELA *);
+void game(NAVE *, NAVE_INIMIGA *, MAX_JANELA *, BONUS *);
+
+void Gera_bonus_velocidade(BONUS *);
 
 /*Gera uma coordenada aleatoria na tela, aonde o inimigo surgir */
 int Gera_inimigo(NAVE_INIMIGA *, MAX_JANELA *);

@@ -35,6 +35,7 @@ void Apaga_nave(NAVE *nave)
         textcolor(BLACK);
         gotoxy(nave->posicao_nave.X, nave->posicao_nave.Y + i);
         printf("   ");
+        
     }
 }
 
@@ -108,10 +109,12 @@ void Dispara_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
 }
 
 /*Comeca o jogo*/
-void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
+void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela, BONUS *bonus_speed)
 {
     int cont = 0;
     int cont_disparos = 0;
+    int cont_disparos_player = 0;
+    int cont_bonus = 0;
     int x = 0;
 
     /*Gero meu inimigo em uma posicao aleatoria da tela*/
@@ -134,14 +137,25 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
             cont = 0;
         }
 
-        /*Dispara projetil do jogador e o apaga*/
-        Dispara_projetil(nave, nave_inimiga);
+        if(cont_disparos_player == DISPARA_PROJETEIS_PLAYER)
+        {
+            /*Dispara projetil do jogador e o apaga*/
+            Dispara_projetil(nave, nave_inimiga);
+            cont_disparos_player = 0;
+        }        
         
-        if(cont_disparos >= DISPARA_PROJETEIS_INIMIGOS)
+        if(cont_disparos == DISPARA_PROJETEIS_INIMIGOS)
         {
             /*Dispara o projetil inimigo e o apaga*/
             Disparo_inimigo(nave_inimiga, nave);
             cont_disparos = 0;
+        }
+
+        if(cont_bonus == GERACAO_BONUS_SPEED)
+        {
+            /*Gera meu bonus de velocidade em uma posicao aleatoria na tela*/
+            Gera_bonus_velocidade(bonus_speed);
+            cont_bonus = 0;
         }
         
         /*Ajusta a velocidade do jogo*/
@@ -150,9 +164,23 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
         /*Incrementa contadores para os disparos e gerador de inimigo*/
         cont++;
         cont_disparos++;
+        cont_disparos_player++;
+        cont_bonus++;
         
     }while(nave->saida);
     
+}
+
+/*Geracao de meu bonus de velocidade de disparo aleatoriamente na tela*/
+void Gera_bonus_velocidade(BONUS *bonus_speed)
+{
+    /*Coordenadas inicializadas aleatoriamente*/
+    bonus_speed->posicao_bonus_speed.X = (1 + rand() % bonus_speed->mapa.X);
+    bonus_speed->posicao_bonus_speed.Y = (1 + rand() % bonus_speed->mapa.Y);
+
+    /*Setagem da impressao do bonus*/
+    gotoxy(bonus_speed->posicao_bonus_speed.X, bonus_speed->posicao_bonus_speed.Y);
+    /*Aqui ficaria a impressao. Permitir a movimentacao do jogador para cima tambem*/
 }
 
 /*Gera uma coordenada aleatoria na tela, aonde o inimigo surgir�*/
@@ -188,7 +216,7 @@ int Gera_inimigo(NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 /*Inicializa naves*/
 void Inicia_naves(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *janela)
 {
-    int i;
+    /*int i;*/
     nave->saida = 1;
 
     /*Inicializa nave jogador*/
@@ -197,11 +225,12 @@ void Inicia_naves(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *janela)
     nave->posicao_nave.Y = janela->maximiza_janela.Y - 2;
     nave->posicao_disparo.X = nave->posicao_nave.X;
     nave->posicao_disparo.Y = nave->posicao_nave.Y;
+    nave->controla_desenho = 0;
 
-    /*Alocacao de quantas balas estarao disponiveis simultaneamente*/
+    /*Alocacao de quantas balas estarao disponiveis simultaneamente
     nave->posicao_projetil = (COORD **)malloc(janela->maximiza_janela.X * janela->maximiza_janela.Y * sizeof(COORD *));
 
-    /*Verificacao*/
+    Verificacao
     if(nave->posicao_projetil != NULL)
     {
         for(i = 0; i < janela->maximiza_janela.X; i++)
@@ -218,7 +247,7 @@ void Inicia_naves(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *janela)
     {
         printf("\tAlocacao deu errado!");
         exit(0);
-    }
+    }*/
     
 
 
@@ -253,6 +282,7 @@ void Navega_nave(NAVE *nave)
                         break;
                     }
 
+                    /*Movimentos da nave*/
                     case SETA_PARA_DIREITA:
                     {
                         if(nave->posicao_nave.X < 1)
@@ -287,6 +317,27 @@ void Navega_nave(NAVE *nave)
                         Desenha_nave(nave);
 
                         break;
+                    }
+
+                    case SETA_PARA_CIMA:
+                    {
+                        /*Limitador para nao chegar muito perto da nave inimiga*/
+                        if(nave->posicao_nave.Y >= LIMITE_MOVIMENTO_Y)
+                        {
+                            Apaga_nave(nave);
+                            nave->posicao_nave.Y--;
+                            Desenha_nave(nave);
+                        }
+                        
+                        break;
+                    }
+
+                    /*Falta uma verificacao aqui para nao ir pra baixo da tela*/
+                    case SETA_PARA_BAIXO:
+                    {
+                        Apaga_nave(nave);
+                        nave->posicao_nave.Y++;
+                        Desenha_nave(nave);
                     }
 
                     /*case ESPACO:

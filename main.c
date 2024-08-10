@@ -1,5 +1,6 @@
-/*gcc main.c -o main.exe -Wall -pedantic -Wextra -Werror funcoes.c conio_v3.2.4.c console_v1.5.5.c */
+/*gcc main.c -o main.exe -Wall -pedantic -Wextra -Werror funcoes.c conio_v3.2.4.c console_v1.5.5.c -lwinmm*/
 # include <stdio.h>
+# include <windows.h>
 # include "conio_v3.2.4.h"
 # include "console_v1.5.5.h"
 # include "funcoes.h"

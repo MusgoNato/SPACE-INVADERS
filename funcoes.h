@@ -26,6 +26,7 @@ typedef struct _nave
     int saida;
     COORD **posicao_projetil;
     int controla_desenho;
+    int control_shoot;
 
 }NAVE;
 

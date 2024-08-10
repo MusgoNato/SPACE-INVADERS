@@ -2,10 +2,11 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <time.h>
+# include <windows.h>
+# include <mmsystem.h>
 # include "console_v1.5.5.h"
 # include "conio_v3.2.4.h"
 # include "funcoes.h"
-
 
 /*Ao gerar aleatoriamente o inimigo pela primeira vez apago a geracao anterior*/
 void Apaga_inimigo(NAVE_INIMIGA *nave_inimiga, int x)
@@ -98,10 +99,18 @@ void Dispara_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
         gotoxy(nave->posicao_disparo.X, ++apaga);
         textcolor(BLACK);
         printf(" ");
+
+        /*Musica para o disparo*/
+        if(nave->control_shoot)
+        {
+            PlaySoundA("pixel.wav", NULL, SND_ASYNC);
+            nave->control_shoot = 0;    
+        }
     }
     else
     {
         /*Reinicializa o disparo ao tocar no limite*/
+        nave->control_shoot = 1;
         nave->posicao_disparo.X = nave->posicao_nave.X;
         nave->posicao_disparo.Y = nave->posicao_nave.Y;
     }
@@ -116,6 +125,7 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela, BONUS *bon
     int cont_disparos_player = 0;
     int cont_bonus = 0;
     int x = 0;
+    /*int music_control = 1;*/
 
     /*Gero meu inimigo em uma posicao aleatoria da tela*/
     x = Gera_inimigo(nave_inimiga, Janela);
@@ -157,6 +167,13 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela, BONUS *bon
             Gera_bonus_velocidade(bonus_speed);
             cont_bonus = 0;
         }
+
+        /*Musica do jogo
+        if(music_control)
+        {
+            PlaySoundA("music.wav", NULL, SND_ASYNC);
+            music_control = 0;
+        }*/
         
         /*Ajusta a velocidade do jogo*/
         Sleep(VELOCIDADE_GAME);
@@ -226,6 +243,7 @@ void Inicia_naves(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *janela)
     nave->posicao_disparo.X = nave->posicao_nave.X;
     nave->posicao_disparo.Y = nave->posicao_nave.Y;
     nave->controla_desenho = 0;
+    nave->control_shoot = 1;
 
     /*Alocacao de quantas balas estarao disponiveis simultaneamente
     nave->posicao_projetil = (COORD **)malloc(janela->maximiza_janela.X * janela->maximiza_janela.Y * sizeof(COORD *));

@@ -118,7 +118,7 @@ void Dispara_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
 }
 
 /*Comeca o jogo*/
-void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela, BONUS *bonus_speed)
+void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela)
 {
     int cont = 0;
     int cont_disparos = 0;
@@ -161,13 +161,6 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela, BONUS *bon
             cont_disparos = 0;
         }
 
-        if(cont_bonus == GERACAO_BONUS_SPEED)
-        {
-            /*Gera meu bonus de velocidade em uma posicao aleatoria na tela*/
-            Gera_bonus_velocidade(bonus_speed);
-            cont_bonus = 0;
-        }
-
         /*Musica do jogo
         if(music_control)
         {
@@ -186,18 +179,6 @@ void game(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *Janela, BONUS *bon
         
     }while(nave->saida);
     
-}
-
-/*Geracao de meu bonus de velocidade de disparo aleatoriamente na tela*/
-void Gera_bonus_velocidade(BONUS *bonus_speed)
-{
-    /*Coordenadas inicializadas aleatoriamente*/
-    bonus_speed->posicao_bonus_speed.X = (1 + rand() % bonus_speed->mapa.X);
-    bonus_speed->posicao_bonus_speed.Y = (1 + rand() % bonus_speed->mapa.Y);
-
-    /*Setagem da impressao do bonus*/
-    gotoxy(bonus_speed->posicao_bonus_speed.X, bonus_speed->posicao_bonus_speed.Y);
-    /*Aqui ficaria a impressao. Permitir a movimentacao do jogador para cima tambem*/
 }
 
 /*Gera uma coordenada aleatoria na tela, aonde o inimigo surgir�*/
@@ -277,8 +258,6 @@ void Inicia_naves(NAVE *nave, NAVE_INIMIGA *nave_inimiga, MAX_JANELA *janela)
     nave_inimiga->posicao_disparo_inimigo.Y = nave_inimiga->posicao_nave_inimiga.Y;
     nave_inimiga->colisor_inferior = TAM_ENEMY_01;
 
-    
-
 }
 
 /*Controla a navegacao da minha nave*/
@@ -340,7 +319,7 @@ void Navega_nave(NAVE *nave)
                     case SETA_PARA_CIMA:
                     {
                         /*Limitador para nao chegar muito perto da nave inimiga*/
-                        if(nave->posicao_nave.Y >= LIMITE_MOVIMENTO_Y)
+                        if(nave->posicao_nave.Y >= LIMITE_MOVIMENTO_CIMA_Y)
                         {
                             Apaga_nave(nave);
                             nave->posicao_nave.Y--;
@@ -353,9 +332,13 @@ void Navega_nave(NAVE *nave)
                     /*Falta uma verificacao aqui para nao ir pra baixo da tela*/
                     case SETA_PARA_BAIXO:
                     {
-                        Apaga_nave(nave);
-                        nave->posicao_nave.Y++;
-                        Desenha_nave(nave);
+                        if(nave->posicao_nave.Y <= LIMITE_MOVIMENTO_BAIXO_Y)
+                        {
+                            Apaga_nave(nave);
+                            nave->posicao_nave.Y++;
+                            Desenha_nave(nave);
+                        }
+
                     }
 
                     /*case ESPACO:

@@ -13,8 +13,12 @@
 # define DISPARA_PROJETEIS_INIMIGOS 6
 # define DISPARA_PROJETEIS_PLAYER 3
 # define GERACAO_BONUS_SPEED 10
-# define LIMITE_MOVIMENTO_Y 25
-
+# define LIMITE_MOVIMENTO_CIMA_Y 25
+# define LIMITE_MOVIMENTO_BAIXO_Y 57 /*Isso nao eh recomendado por questoes de portabilidade, o recomendado seria passar a estrutura Janela
+                                        para a verificacao no case do movimento para baixo, onde tenho a maximizacao da minha janela no ponto Y,
+                                        no caso teria o limitador correto para qualquer tela, pois pego o tamanho maximo dela.
+                                        Nao fiz por pura preguica sorry ;(
+                                        */
 
 /*Registros*/
 typedef struct _nave
@@ -67,7 +71,7 @@ void Dispara_projetil(NAVE *, NAVE_INIMIGA *);
 void Disparo_inimigo(NAVE_INIMIGA *, NAVE *);
 
 /*Comeco do meu jogo*/
-void game(NAVE *, NAVE_INIMIGA *, MAX_JANELA *, BONUS *);
+void game(NAVE *, NAVE_INIMIGA *, MAX_JANELA *);
 
 void Gera_bonus_velocidade(BONUS *);
 

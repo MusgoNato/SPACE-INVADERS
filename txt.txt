@@ -28,3 +28,7 @@ void Dispara_projetil(NAVE *nave)
             
     }
 }
+
+
+Proximo passo
+Verificar colisao do projetil com a nave inimiga e assim conseguir imprimir a nave inimiga sem a parte que foi colidida

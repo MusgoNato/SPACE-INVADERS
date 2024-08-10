@@ -10,7 +10,6 @@ int main(int argc, char *argv[])
     NAVE nave;
     NAVE_INIMIGA nave_inimiga;
     MAX_JANELA janela;
-    BONUS bonus_speed;
     argc = argc;
     argv = argv;
 
@@ -19,7 +18,6 @@ int main(int argc, char *argv[])
 
     /*Maximiza janela*/
     janela.maximiza_janela = MaxDimensaoJanela();
-    bonus_speed.mapa = janela.maximiza_janela;
     setDimensaoJanela(janela.maximiza_janela.X, janela.maximiza_janela.Y);
 
     /*Inicializacao dos valores da nave*/
@@ -29,7 +27,7 @@ int main(int argc, char *argv[])
     Desenha_nave(&nave);
 
     /*Faz a chamada do jogo*/
-    game(&nave, &nave_inimiga, &janela, &bonus_speed);
+    game(&nave, &nave_inimiga, &janela);
 
     /*Volta ao normal*/
     free(nave.posicao_projetil);

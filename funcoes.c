@@ -104,6 +104,10 @@ void Dispara_projetil(NAVE *nave, NAVE_INIMIGA *nave_inimiga)
         if(nave->control_shoot)
         {
             PlaySoundA("pixel.wav", NULL, SND_ASYNC);
+
+            /*Existe a possibilidade de tocar a musica por meio de um reprodutor de musica do windows por meio do comando system,
+            a musica deve estar na mesma pasta e via linha de comando deve ser passado o reprodutor a qual tocara a musica.
+            system("pixel.wav");*/
             nave->control_shoot = 0;    
         }
     }

@@ -4,6 +4,7 @@
         "conio_v3.2.4.h": "c",
         "funcoes.h": "c",
         "stdio.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "windows.h": "c"
     }
 }
